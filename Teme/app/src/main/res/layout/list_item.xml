@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dip" >
+
+    <!--  ListRow Left sied Thumbnail image -->
+    <LinearLayout android:id="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dip"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical"
+        android:layout_marginRight="5dip">
+
+    </LinearLayout>
+
+    <!--Name Of Member-->
+    <TextView
+        android:id="@+id/memName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/thumbnail"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:text="Mr Ex Ample"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="28dip"
+        android:textStyle="bold"/>
+
+    <!-- Member phone no -->
+    <TextView
+        android:id="@+id/memNo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/memName"
+        android:textColor="@color/black"
+        android:textSize="18dip"
+        android:layout_marginTop="1dip"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:text="Just gona stand there and ..." />
+
+
+
+
+</RelativeLayout>

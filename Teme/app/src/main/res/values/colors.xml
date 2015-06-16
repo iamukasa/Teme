@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="light_grey">#ffe4e4e4</color>
+    <color name="act_back">#303F9F</color>
+    <color name="white_pure">#FFFFFF</color>
+    <color name="theme_dialer_accent">#FFF</color>
+    <color name="black">#000</color>
+
+    <color name="blue">#303F9F</color>
+    <color name="green">#4CAF50</color>
+    <color name="green_teal">#009688</color>
+    <color name="purple">#673AB7</color>
+    <color name="red">#F44336</color>
+    <color name="cyan">#00BCD4</color>
+    <color name="lime">#CDDC39</color>
+
+</resources>

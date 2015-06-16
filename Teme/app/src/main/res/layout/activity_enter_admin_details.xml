@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context="com.kate.teme.EnterAdminDetails">
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbarAdminDetails"
+        android:textColor="@color/white_pure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"/>
+
+
+
+
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter your details"
+        android:textSize="30dp"
+        android:layout_marginTop="5dp"
+        />
+
+  <EditText
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:hint="Enter Phone no"
+      android:inputType="number"
+      android:id="@+id/adminEntPhnNo"
+      />
+    <EditText
+        android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:hint="Enter Paybill no"
+        android:inputType="number"
+        android:id="@+id/adminEntPayBill"
+      />
+    <EditText
+        android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:hint="Enter Fare rate (Km/Ksh)"
+        android:inputType="number"
+        android:id="@+id/adminEntRate"
+      />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saveAdminDetails"
+        android:text="save"
+
+        />
+
+</LinearLayout>

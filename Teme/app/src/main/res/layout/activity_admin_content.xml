@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.kate.teme.AdminContent">
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbarAdmin"
+        android:textColor="@color/white_pure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"/>
+
+    <TextView
+        android:layout_marginTop="5dp"
+        android:text="Enter Driver Details " android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:hint="Enter Drivers name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/adminEntDriver"
+        />
+    <EditText
+        android:hint="Enter Drivers car"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/adminEntCar"
+        />
+    <Button
+        android:text="Save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnAdminSaveDriver"
+        />
+    <ListView
+        android:animateLayoutChanges="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listAdminDrivers"
+        />
+
+
+</LinearLayout>

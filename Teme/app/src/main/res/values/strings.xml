@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Teme</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_enter_driver_details">EnterDriverDetails</string>
+    <string name="title_activity_admin_content">AdminContent</string>
+    <string name="title_activity_passenger_content">PassengerContent</string>
+    <string name="title_activity_driver_content">DriverContent</string>
+    <string name="title_activity_maps">Map</string>
+</resources>
