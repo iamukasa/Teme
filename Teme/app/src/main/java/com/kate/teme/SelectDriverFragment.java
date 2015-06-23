@@ -13,6 +13,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
+
 import java.util.ArrayList;
 
 
@@ -21,16 +27,21 @@ public class SelectDriverFragment extends Fragment {
     ArrayList<Driver> driversArray;
     ArrayList<String> dDereva,dCar;
     SharedPreferences mTemeprefferences;
+    Firebase myFirebaseRef;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         View fWhatsapp= inflater.inflate(R.layout.fragment_select_driver, container, false);
         mTemeprefferences=getActivity().getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
         driversList=(ListView)fWhatsapp.findViewById(R.id.listDriverstwo);
         driversArray=new ArrayList<Driver>();
         dDereva=new ArrayList<String>();
         dCar=new ArrayList<String>();
+        Firebase.setAndroidContext(getActivity().getApplicationContext());
+        Firebase.getDefaultConfig().setPersistenceEnabled(true);
+        myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
+
 
         dDereva.add("Sam");
          dDereva.add("Tom");
@@ -48,11 +59,45 @@ public class SelectDriverFragment extends Fragment {
         dCar.add("Toyota proBox");
         dCar.add("Nissan Premio");
 
+        Query queryRef = myFirebaseRef.child("DriversList").orderByChild("Drivers availability").equalTo("Yes");
+        queryRef.keepSynced(true);
+        queryRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+                System.out.println(snapshot.getKey());
+              String name=  snapshot.child("DriversList").child("DriversList").child("Driver name").getKey();
+              String car= snapshot.child("DriversList").child("DriversList").child("Driver name").getKey();
+                driversArray.add(new Driver(name,car));
 
-        for(int t=0;t<dDereva.size();t++){
-            driversArray.add(new Driver(dDereva.get(t),dCar.get(t)));
+            }
 
-        }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+            // ....
+        });
+
+
+//        for(int t=0;t<dDereva.size();t++){
+//            driversArray.add(new Driver(dDereva.get(t),dCar.get(t)));
+//
+//        }
         DriverAdapter adapters = new DriverAdapter(getActivity().getApplicationContext(),
                 R.layout.list_item,driversArray);
         driversList.setAdapter(adapters);
@@ -80,5 +125,6 @@ public class SelectDriverFragment extends Fragment {
 
         return fWhatsapp;
     }
+
 
 }

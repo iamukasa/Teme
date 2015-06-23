@@ -17,6 +17,11 @@ import android.view.ViewConfiguration;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 import java.lang.reflect.Field;
 
 
@@ -26,53 +31,57 @@ public class DriverContent extends ActionBarActivity {
     private NotificationManager mNotificationManager;
     private int notificationID = 100;
     private int numMessages = 0;
-
+    Firebase myFirebaseRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_content);
         chkAvailable=(CheckBox)findViewById(R.id.chkAvailable);
+
+        Firebase.setAndroidContext(getApplicationContext());
+
+        myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
         chkAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
 
-  /* Invoking the default notification service */
-                    NotificationCompat.Builder  mBuilder =
-                            new NotificationCompat.Builder(getApplicationContext());
+//  /* Invoking the default notification service */
+//                    NotificationCompat.Builder  mBuilder =
+//                            new NotificationCompat.Builder(getApplicationContext());
+//
+//                    mBuilder.setContentTitle("New Fare");
+//                    mBuilder.setContentText("Go pick someone up");
+//                    mBuilder.setTicker("Go pick up a new fare from the CBD and drop him at Ngong");
+//                    mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+//                    mBuilder.setSound(Uri.parse("android.resource://"
+//                            + getPackageName() + "/" + R.raw.notification_loaded));
+//
+//      /* Increase notification number every time a new notification arrives */
+//                    mBuilder.setNumber(++numMessages);
+//
+//      /* Creates an explicit intent for an Activity in your app */
+//                    Intent resultIntent = new Intent(DriverContent.this, NotificationView.class);
+//                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+//                    stackBuilder.addParentStack(NotificationView.class);
+//
+//      /* Adds the Intent that starts the Activity to the top of the stack */
+//                    stackBuilder.addNextIntent(resultIntent);
+//                    PendingIntent resultPendingIntent =
+//                            stackBuilder.getPendingIntent(
+//                                    0,
+//                                    PendingIntent.FLAG_UPDATE_CURRENT
+//                            );
+//
+//                    mBuilder.setContentIntent(resultPendingIntent);
+//
+//                    mNotificationManager =
+//                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//      /* notificationID allows you to update the notification later on. */
+//                    mNotificationManager.notify(notificationID, mBuilder.build());
 
-                    mBuilder.setContentTitle("New Fare");
-                    mBuilder.setContentText("Go pick someone up");
-                    mBuilder.setTicker("Go pick up a new fare from the CBD and drop him at Ngong");
-                    mBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                    mBuilder.setSound(Uri.parse("android.resource://"
-                            + getPackageName() + "/" + R.raw.notification_loaded));
-
-      /* Increase notification number every time a new notification arrives */
-                    mBuilder.setNumber(++numMessages);
-
-      /* Creates an explicit intent for an Activity in your app */
-                    Intent resultIntent = new Intent(DriverContent.this, NotificationView.class);
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-                    stackBuilder.addParentStack(NotificationView.class);
-
-      /* Adds the Intent that starts the Activity to the top of the stack */
-                    stackBuilder.addNextIntent(resultIntent);
-                    PendingIntent resultPendingIntent =
-                            stackBuilder.getPendingIntent(
-                                    0,
-                                    PendingIntent.FLAG_UPDATE_CURRENT
-                            );
-
-                    mBuilder.setContentIntent(resultPendingIntent);
-
-                    mNotificationManager =
-                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-      /* notificationID allows you to update the notification later on. */
-                    mNotificationManager.notify(notificationID, mBuilder.build());
-
-
+checknewFare();
 
                 }
                 else if (!isChecked) {
@@ -85,7 +94,78 @@ public class DriverContent extends ActionBarActivity {
             }
         });
         setToolBar();
+
+
     }
+
+    private void checknewFare() {
+ myFirebaseRef.child("New Fare").addValueEventListener(new ValueEventListener() {
+     @Override
+     public void onDataChange(DataSnapshot snapshot) {
+//         GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {};
+//         List<String>  clocationlist =  snapshot.child("New fare location").getValue(t);
+//         List<String>  cdestinationlist =  snapshot.child("New fare Destination").getValue(t);
+//
+//         if (cdestinationlist!=null & cdestinationlist!=null){
+
+
+         String currlocation= snapshot.child("New fare location").getValue().toString();
+         String currdestination=snapshot.child("New fare Destination").getValue().toString();
+
+
+         System.out.println(currlocation);
+         System.out.println(currdestination);
+
+
+                 /* Invoking the default notification service */
+         NotificationCompat.Builder  mBuilder =
+                 new NotificationCompat.Builder(getApplicationContext());
+
+         mBuilder.setContentTitle("New Fare");
+         mBuilder.setContentText("Go pick someone up");
+         mBuilder.setTicker("Go pick up a new fare from" + currlocation + " and drop him at " + currdestination);
+         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+         mBuilder.setSound(Uri.parse("android.resource://"
+                 + getPackageName() + "/" + R.raw.notification_loaded));
+
+      /* Increase notification number every time a new notification arrives */
+         mBuilder.setNumber(++numMessages);
+
+      /* Creates an explicit intent for an Activity in your app */
+         Intent resultIntent = new Intent(DriverContent.this, NotificationView.class);
+         resultIntent.putExtra("Destination",currdestination);
+         resultIntent.putExtra("CurrentLocation",currlocation);
+
+         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+         stackBuilder.addParentStack(NotificationView.class);
+
+      /* Adds the Intent that starts the Activity to the top of the stack */
+         stackBuilder.addNextIntent(resultIntent);
+         PendingIntent resultPendingIntent =
+                 stackBuilder.getPendingIntent(
+                         0,
+                         PendingIntent.FLAG_UPDATE_CURRENT
+                 );
+
+         mBuilder.setContentIntent(resultPendingIntent);
+
+         mNotificationManager =
+                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+      /* notificationID allows you to update the notification later on. */
+         mNotificationManager.notify(notificationID, mBuilder.build());
+//         }
+
+     }
+
+     @Override
+     public void onCancelled(FirebaseError firebaseError) {
+
+     }
+ });
+
+    }
+
     private void setToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarDriver);
         if (toolbar != null) {

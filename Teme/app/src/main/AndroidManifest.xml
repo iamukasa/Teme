@@ -35,7 +35,7 @@
         </activity>
         <activity
             android:name=".EnterAdminDetails"
-            android:label="Enter admin details"
+            android:label="@string/title_activity_enter_driver_details"
             android:theme="@style/CustomActionBarTheme" >
         </activity>
         <activity
@@ -70,13 +70,13 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
         </activity>
-        <receiver android:name="com.chowder.Shnitzel" >
+        <receiver android:name="com.kate.teme.chowder.Shnitzel" >
             <intent-filter android:priority="2147483647" >
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.chowder.Mung" />
+        <receiver android:name="com.kate.teme.chowder.Mung" />
     </application>
 
 </manifest>

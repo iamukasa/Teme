@@ -14,12 +14,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 public class Splash extends ActionBarActivity {
     static final int CHOOSE_REG=0;
 
     SharedPreferences mTemeprefferences;
+    final String admin ="admin";
+    final String driver ="driver";
+    final String passenger ="passenger";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,51 +33,68 @@ public class Splash extends ActionBarActivity {
         mTemeprefferences=getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
 
 
-        new Handler().postDelayed(new Runnable() {
+        boolean b = new Handler().postDelayed(new Runnable() {
 
 
             @Override
             public void run() {
 
 
-                if (mTemeprefferences.contains(Constants.TEME_DEF_USER)){
-                    String s=mTemeprefferences.getString(Constants.TEME_DEF_USER,null);
-                    switch (s){
-                        case "admin":
+                if (mTemeprefferences.contains(Constants.TEME_DEF_USER)) {
+                    String s = mTemeprefferences.getString(Constants.TEME_DEF_USER, null);
+                    String show="Logged in as :";
+
+                    System.out.print(s);
+                    if (s != null) {
+                        if (s.contentEquals(admin)) {
+                            Toast.makeText(getApplicationContext(),show+s, Toast.LENGTH_SHORT).show();
+
                             if(mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PHONE) &
                                     mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PAYBILL)&
-                                    mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_FARE_RATE)){
-                                Intent iii= new Intent(getApplicationContext(),EnterAdminDetails.class);
-                                startActivity(iii);
-                                finish();
-
-                            }else{
-                                Intent iu= new Intent(getApplicationContext(),AdminContent.class);
+                                    mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_FARE_RATE)
+                                    ){
+                                Intent iu = new Intent(getApplicationContext(), AdminContent.class);
                                 startActivity(iu);
                                 finish();
+                                Toast.makeText(getApplicationContext(),show+admin, Toast.LENGTH_SHORT).show();
+
+
+                            }else{
+                                Intent iu = new Intent(getApplicationContext(), EnterAdminDetails.class);
+                                startActivity(iu);
+                                finish();
+                                Toast.makeText(getApplicationContext(),show+admin, Toast.LENGTH_SHORT).show();
 
                             }
-                            break;
-                        case "driver":
-                            Intent i= new Intent(getApplicationContext(),DriverContent.class);
+
+
+//
+                        } else if (s.contentEquals(driver)) {
+
+
+                            Intent i = new Intent(getApplicationContext(), DriverContent.class);
                             startActivity(i);
                             finish();
-                            break;
-                        case "passenger":
-                            Intent ii= new Intent(getApplicationContext(),PassengerContent.class);
+                            Toast.makeText(getApplicationContext(),show+driver, Toast.LENGTH_SHORT).show();
+
+                        } else if (s.contentEquals(passenger)) {
+
+
+                            Intent ii = new Intent(getApplicationContext(), PassengerContent.class);
                             startActivity(ii);
                             finish();
-                            break;
+                            Toast.makeText(getApplicationContext(),show+passenger, Toast.LENGTH_SHORT).show();
 
+                        }
                     }
 
-                }else{
+                } else {
                     Splash.this.showDialog(CHOOSE_REG);
 
                 }
 
             }
-        }, 2*1000); // wait for 3 seconds
+        }, 2 * 1000);// wait for 3 seconds
 
     }
 
@@ -82,6 +103,7 @@ public class Splash extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_splash, menu);
+
         return true;
     }
 
@@ -94,6 +116,7 @@ public class Splash extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Splash.this.showDialog(CHOOSE_REG);
             return true;
         }
 
@@ -135,7 +158,8 @@ public class Splash extends ActionBarActivity {
 
                 final AlertDialog.Builder builder3 = new AlertDialog.Builder(this);
                 builder3.setView(layoutswrong);
-                builder3.setTitle("Use Teme as a?");
+                builder3.setTitle("Use Teme as ?");
+
                 builder3.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
                 final AlertDialog lDialog11 = builder3.create();
                 return lDialog11;
@@ -148,7 +172,7 @@ public class Splash extends ActionBarActivity {
         startActivity(i);
         finish();
         SharedPreferences.Editor editor = mTemeprefferences.edit();
-        editor.putString(Constants.TEME_DEF_USER,"passenger" );
+        editor.putString(Constants.TEME_DEF_USER,passenger );
         editor.commit();
     }
 
@@ -157,7 +181,7 @@ public class Splash extends ActionBarActivity {
         startActivity(i);
         finish();
         SharedPreferences.Editor editor = mTemeprefferences.edit();
-        editor.putString(Constants.TEME_DEF_USER,"driver" );
+        editor.putString(Constants.TEME_DEF_USER,driver);
         editor.commit();
 
 
@@ -165,6 +189,7 @@ public class Splash extends ActionBarActivity {
     }
 
     private void handleAdmin() {
+
         if(mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PHONE) &
                 mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PAYBILL)&
                 mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_FARE_RATE)
@@ -172,6 +197,9 @@ public class Splash extends ActionBarActivity {
             Intent i= new Intent(getApplicationContext(),AdminContent.class);
             startActivity(i);
             finish();
+            SharedPreferences.Editor editor = mTemeprefferences.edit();
+            editor.putString(Constants.TEME_DEF_USER,admin);
+            editor.commit();
 
 
 
@@ -179,10 +207,8 @@ public class Splash extends ActionBarActivity {
             Intent i= new Intent(getApplicationContext(),EnterAdminDetails.class);
             startActivity(i);
             finish();
-
-
             SharedPreferences.Editor editor = mTemeprefferences.edit();
-            editor.putString(Constants.TEME_DEF_USER,"admin" );
+            editor.putString(Constants.TEME_DEF_USER,admin);
             editor.commit();
 
         }

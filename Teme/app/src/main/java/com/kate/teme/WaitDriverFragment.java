@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.chowder.Chowder;
+import com.kate.teme.chowder.Chowder;
 
 import java.util.concurrent.TimeUnit;
 

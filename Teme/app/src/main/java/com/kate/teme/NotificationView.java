@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -24,10 +25,20 @@ import java.lang.reflect.Field;
 public class NotificationView  extends ActionBarActivity {
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     Button seeMap;
+    String currentlocation,currentdestination;
+    TextView instructions;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.notification);
+        instructions=(TextView)findViewById(R.id.newText);
+        Intent i = getIntent();
+        // Selected image id
+       currentlocation = i.getExtras().getString("CurrentLocation");
+       currentdestination  = i.getExtras().getString("Destination");
+        instructions.clearComposingText();
+        instructions.setText("Go pick up a new fare from the "+currentlocation+" and drop him at"+ currentdestination);
 
 
 
@@ -38,7 +49,7 @@ public class NotificationView  extends ActionBarActivity {
 
 
 
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=Central+Business+District+Nairobi,+Kenya&mode=d");
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=+"+currentlocation+"Nairobi,+Kenya&mode=d");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);

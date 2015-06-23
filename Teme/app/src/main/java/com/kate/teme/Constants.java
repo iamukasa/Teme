@@ -11,6 +11,6 @@ public class Constants {
     public static final String TEME_ADMIN_DETAILS_FARE_RATE= "chamaName";
     public static final String TEME_CURRENT_DESTINATION= "chamaName";
     public static final String TEME_DRIVER_LIST= "chamaName";
-    public static final String TEME_CURRENT_PASSENGER_FRAGMENT= "chamaName";
+
 
 }

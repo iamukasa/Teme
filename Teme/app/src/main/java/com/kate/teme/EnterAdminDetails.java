@@ -14,6 +14,8 @@ import android.view.ViewConfiguration;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.firebase.client.Firebase;
+
 import java.lang.reflect.Field;
 
 
@@ -21,14 +23,20 @@ public class EnterAdminDetails extends ActionBarActivity {
     EditText phnNo,paybillNo,farRate;
     Button seveDEt;
     SharedPreferences mTemeprefferences;
+    Firebase myFirebaseRef;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTemeprefferences=getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
-
         setContentView(R.layout.activity_enter_admin_details);
+        mTemeprefferences=getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
+        Firebase.setAndroidContext(this);
+//        Firebase.getDefaultConfig().setPersistenceEnabled(true);
+        myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
+//        myFirebaseRef.keepSynced(true);
+
+
         phnNo=(EditText)findViewById(R.id.adminEntPhnNo);
         paybillNo=(EditText)findViewById(R.id.adminEntPayBill);
         farRate=(EditText)findViewById(R.id.adminEntRate);
@@ -39,6 +47,11 @@ public class EnterAdminDetails extends ActionBarActivity {
                 String a=paybillNo.getText().toString();
                 String b=phnNo.getText().toString();
                 String c=farRate.getText().toString();
+                myFirebaseRef.child("AdminList").child("Admin paybill").push().setValue(a);
+                myFirebaseRef.child("AdminList").child("Admin phone no ").push().setValue(b);
+                myFirebaseRef.child("AdminList").child("Admin fare rate").push().setValue(c);
+
+
                 SharedPreferences.Editor editor = mTemeprefferences.edit();
                 editor.putString(Constants.TEME_ADMIN_DETAILS_PAYBILL,a );
                 editor.commit();
@@ -59,11 +72,12 @@ public class EnterAdminDetails extends ActionBarActivity {
                 Intent iu= new Intent(getApplicationContext(),AdminContent.class);
                 startActivity(iu);
                 finish();
-                setToolBar();
+
             }
         });
-
+setToolBar();
     }
+
     private void setToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarAdminDetails);
         if (toolbar != null) {
@@ -71,15 +85,8 @@ public class EnterAdminDetails extends ActionBarActivity {
             setSupportActionBar(toolbar);
             setUpActionbar();
             getOverflowMenu();
-
             toolbar.setBackgroundColor(getResources().getColor(R.color.blue));
             toolbar.setTitleTextColor(getResources().getColor(R.color.white_pure));
-
-
-
-
-
-
         }
 
     }
@@ -92,12 +99,8 @@ public class EnterAdminDetails extends ActionBarActivity {
             bar.setDisplayShowHomeEnabled(false);
             bar.setDisplayHomeAsUpEnabled(false);
             bar.setDisplayShowTitleEnabled(true);
-
-
-
             bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-
-        }
+ }
 
 
     }
@@ -142,5 +145,19 @@ public class EnterAdminDetails extends ActionBarActivity {
             e.printStackTrace();
         }
     }
+    public void onStop(){
+        super.onStop();
 
+        SharedPreferences.Editor editor2 = mTemeprefferences.edit();
+        editor2.putString(Constants.TEME_DEF_USER,"admin");
+        editor2.commit();
+
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        SharedPreferences.Editor editor = mTemeprefferences.edit();
+        editor.putString(Constants.TEME_DEF_USER,"admin");
+        editor.commit();
+    }
 }

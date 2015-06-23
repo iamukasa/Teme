@@ -3,6 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_settings2">User Dialog</string>
     <string name="title_activity_enter_driver_details">EnterDriverDetails</string>
     <string name="title_activity_admin_content">AdminContent</string>
     <string name="title_activity_passenger_content">PassengerContent</string>
