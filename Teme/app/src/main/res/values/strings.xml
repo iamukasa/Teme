@@ -9,4 +9,6 @@
     <string name="title_activity_passenger_content">PassengerContent</string>
     <string name="title_activity_driver_content">DriverContent</string>
     <string name="title_activity_maps">Map</string>
+
+    <string name="title_activity_driver_log_in">Log In</string>
 </resources>

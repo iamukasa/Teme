@@ -21,8 +21,14 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Navigate there"
+        android:text="Navigate to Passengers location"
         android:id="@+id/btnMap"
+        />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Navigate to Passengers destination"
+        android:id="@+id/btnMapTwo"
         />
 
 

@@ -16,14 +16,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AdminContent extends ActionBarActivity {
     SharedPreferences mTemeprefferences;
@@ -56,21 +58,22 @@ public class AdminContent extends ActionBarActivity {
 
         fillFromOnline();
 
+
         adminSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String driverstr = adminDriver.getText().toString();
                 String carstr = adminCar.getText().toString();
 
-                driver.add(new Driver(driverstr, carstr));
 
-                myFirebaseRef.child("DriversList").child("Driver name").push().setValue(driverstr);
-                myFirebaseRef.child("DriversList").child("Drivers car").push().setValue(carstr);
-                myFirebaseRef.child("DriversList").child("Drivers availability").push().setValue("No");
+                Map<String, String> post1 = new HashMap<String, String>();
+                post1.put("drivername",driverstr);
+                post1.put("carname",carstr);
+                post1.put("available","No");
+                myFirebaseRef.child("DriversList").push().setValue(post1);
 
-                DriverAdapter adapters = new DriverAdapter(getApplicationContext(),
-                        R.layout.list_item, driver);
-                adminList.setAdapter(adapters);
+
+
 
                 Gson gson = new Gson();
                 String jsonMembers = gson.toJson(driver);
@@ -91,49 +94,44 @@ public class AdminContent extends ActionBarActivity {
     }
 
     private void fillFromOnline() {
- myFirebaseRef.child("DriversList").addValueEventListener(new ValueEventListener() {
-     @Override
-     public void onDataChange(DataSnapshot snapshot) {
+        myFirebaseRef.child("DriversList").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String s) {
+                Map<String, Object> newPost = (Map<String, Object>) snapshot.getValue();
+                if(newPost!=null){
+                    driver.add(new Driver(newPost.get("drivername").toString(), newPost.get("carname").toString()));
+                    DriverAdapter adapters = new DriverAdapter(getApplicationContext(),
+                            R.layout.list_item, driver);
+                    adminList.setAdapter(adapters);
+
+                }
 
 
+            }
 
-//         GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {
-//         };
-//         GenericTypeIndicator<List<String>> t2 = new GenericTypeIndicator<List<String>>() {};
-//         List<String>  namelist =  snapshot.child("Driver name").getValue(t);
-//         List<String>  carlist =  snapshot.child("Drivers car").getValue(t2);
-//         if (namelist!=null & carlist!=null){
-//
-//
-//         for(int wee=0;wee<namelist.size();wee++){
-//             driver.add(new Driver(namelist.get(wee).toString(),carlist.get(wee).toString()));
-//         }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-         String name=  snapshot.child("Driver name").getValue().toString();
-         String car= snapshot.child("Drivers car").getValue().toString();
-         Toast.makeText(getApplicationContext(),name,Toast.LENGTH_SHORT).show();
-         Toast.makeText(getApplicationContext(),car,Toast.LENGTH_SHORT).show();
-          Toast.makeText(getApplicationContext(),snapshot.getKey(),Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
+            }
 
-         System.out.println(name);
-         System.out.println(car);
-         driver.add(new Driver(name, car));
-         DriverAdapter adapters = new DriverAdapter(getApplicationContext(),
-                 R.layout.list_item, driver);
-         adminList.setAdapter(adapters);
-         }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-//     }
+            }
 
-     @Override
-     public void onCancelled(FirebaseError firebaseError) {
-         Toast.makeText(getApplicationContext(),firebaseError.toString(),Toast.LENGTH_SHORT).show();
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
 
-     }
- });
+            }
+        });
     }
+
+
 
     private void setToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarAdmin);

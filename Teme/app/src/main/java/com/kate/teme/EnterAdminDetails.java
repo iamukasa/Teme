@@ -17,6 +17,8 @@ import android.widget.EditText;
 import com.firebase.client.Firebase;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class EnterAdminDetails extends ActionBarActivity {
@@ -47,9 +49,13 @@ public class EnterAdminDetails extends ActionBarActivity {
                 String a=paybillNo.getText().toString();
                 String b=phnNo.getText().toString();
                 String c=farRate.getText().toString();
-                myFirebaseRef.child("AdminList").child("Admin paybill").push().setValue(a);
-                myFirebaseRef.child("AdminList").child("Admin phone no ").push().setValue(b);
-                myFirebaseRef.child("AdminList").child("Admin fare rate").push().setValue(c);
+
+                Map<String, String> post1 = new HashMap<String, String>();
+                post1.put("Admin paybill",a);
+                post1.put("Admin phone no ",b);
+                post1.put("Admin fare rate",c);
+                myFirebaseRef.child("AdminList").push().setValue(post1);
+
 
 
                 SharedPreferences.Editor editor = mTemeprefferences.edit();

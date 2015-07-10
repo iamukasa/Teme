@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 
 public class NotificationView  extends ActionBarActivity {
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    Button seeMap;
+    Button seeMap,seeMap2;
     String currentlocation,currentdestination;
     TextView instructions;
     @Override
@@ -46,10 +46,10 @@ public class NotificationView  extends ActionBarActivity {
         seeMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String currentlocationedited= currentlocation.replace(" ", "+");
 
 
-
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=+"+currentlocation+"Nairobi,+Kenya&mode=d");
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=+"+currentlocationedited+"Nairobi,+Kenya&mode=d");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);
@@ -58,6 +58,21 @@ public class NotificationView  extends ActionBarActivity {
 //                Intent i=new Intent(getApplicationContext(),MapsActivity.class);
 //                startActivity(i);
 //                finish();
+            }
+        });
+           seeMap2=(Button)findViewById(R.id.btnMapTwo);
+          seeMap2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String currentdestinationedited= currentdestination.replace(" ", "+");
+
+     Uri gmmIntentUri = Uri.parse("google.navigation:q=+"+currentdestinationedited+"Nairobi,+Kenya&mode=d");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+
+
+
             }
         });
 

@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.kate.teme.geofire.GeoFire;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,6 +28,10 @@ import java.util.List;
  * Created by irving on 6/9/15.
  */
 public class DestinationsDetailsFragment extends Fragment {
+    private static final String GEO_FIRE_REF = "https://teme.firebaseio.com/New_Fare/New_fare_location";
+    private GeoFire geoFire;
+
+
     SharedPreferences mTemeprefferences;
     private Geocoder gc;
     List<Address> locationList;
@@ -42,6 +47,8 @@ public class DestinationsDetailsFragment extends Fragment {
         Firebase.setAndroidContext(getActivity().getApplicationContext());
 
         myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
+        // setup GeoFire
+        geoFire = new GeoFire(new Firebase(GEO_FIRE_REF));
 
 
         destination.setOnKeyListener(new View.OnKeyListener() {
@@ -55,7 +62,6 @@ public class DestinationsDetailsFragment extends Fragment {
                     editor.commit();
                     getPAsssengerLocation();
 
-                    myFirebaseRef.child("New Fare").child("New fare Destination").push().setValue(destination.getText().toString());
 
 
                     FragmentManager fragmentManager=getActivity().getSupportFragmentManager();
@@ -86,10 +92,16 @@ getPAsssengerLocation();
 
         {
             try {
-                locationList = gc.getFromLocation(location.getLatitude(),location.getLongitude(), 1);
+                locationList = gc.getFromLocation(location.getLatitude(),location.getLongitude(), 3);
                 Toast.makeText(getActivity().getApplicationContext(), "Latitude : " + location.getLongitude() +
-                        " Longitude : " + location.getLongitude(), Toast.LENGTH_SHORT).show() ;
-                sendDataOnline(locationList);
+                        " Longitude : " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+                String currlocationttosend=locationList.get(0).getAddressLine(0);
+
+
+                SharedPreferences.Editor editor = mTemeprefferences.edit();
+                editor.putString(Constants.TEME_CURRENT_LOCATION, currlocationttosend);
+  //geoFire.setLocation("Current destination",new GeoLocation(location.getLatitude(),location.getLongitude()));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -106,12 +118,16 @@ getPAsssengerLocation();
 
                 try {
 //                    cord.setText( "Latitude : "+location.getLongitude()+" Longitude : "+location.getLongitude());
-                    Toast.makeText(getActivity().getApplicationContext(), "Latitude : "+location.getLongitude()+" Longitude : "+location.getLongitude(), Toast.LENGTH_SHORT).show() ;
+
                     if(lm.isProviderEnabled(getActivity().WIFI_SERVICE))
                     {
                         locationList = gc.getFromLocation(location.getLatitude(),location.getLongitude(), 1);
-                        sendDataOnline(locationList);
+//                        geoFire.setLocation("Current destination",new GeoLocation(location.getLatitude(),location.getLongitude()));
+                        String currlocationttosend=locationList.get(0).getAddressLine(0);
 
+
+                        SharedPreferences.Editor editor = mTemeprefferences.edit();
+                        editor.putString(Constants.TEME_CURRENT_LOCATION, currlocationttosend);
                     }
 
                 } catch (IOException e) {
@@ -155,11 +171,12 @@ getPAsssengerLocation();
 
     }
 
-    private void sendDataOnline(List<Address> location) {
 
-        myFirebaseRef.child("New Fare").child("New fare location").push().setValue(location.get(0).toString());
 
-    }
+
+
+
+
 
 
 }

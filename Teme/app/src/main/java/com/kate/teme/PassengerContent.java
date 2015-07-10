@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
-import android.widget.Button;
 
 import java.lang.reflect.Field;
 
@@ -126,5 +125,20 @@ public class PassengerContent extends ActionBarActivity {
         }
     }
 
+    public void onStop(){
+        super.onStop();
+
+        SharedPreferences.Editor editor2 = mTemeprefferences.edit();
+        editor2.putString(Constants.TEME_DEF_USER,"passenger");
+        editor2.commit();
+
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+        SharedPreferences.Editor editor = mTemeprefferences.edit();
+        editor.putString(Constants.TEME_DEF_USER,"passenger");
+        editor.commit();
+    }
 
 }

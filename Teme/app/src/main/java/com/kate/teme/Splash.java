@@ -53,6 +53,7 @@ public class Splash extends ActionBarActivity {
                                     mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PAYBILL)&
                                     mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_FARE_RATE)
                                     ){
+
                                 Intent iu = new Intent(getApplicationContext(), AdminContent.class);
                                 startActivity(iu);
                                 finish();
@@ -70,12 +71,32 @@ public class Splash extends ActionBarActivity {
 
 //
                         } else if (s.contentEquals(driver)) {
+                            if (mTemeprefferences.contains(Constants.TEME_DRIVER_LOGGED_IN)){
+                                if("logged in".equals(mTemeprefferences.getString(Constants.TEME_DRIVER_LOGGED_IN, null))){
+                                    Intent i = new Intent(getApplicationContext(), DriverContent.class);
+                                    startActivity(i);
+                                    finish();
+                                    Toast.makeText(getApplicationContext(),show+driver, Toast.LENGTH_SHORT).show();
+
+                                }else{
+                                    Intent i = new Intent(getApplicationContext(), DriverLogIn.class);
+                                    startActivity(i);
+                                    finish();
+                                    Toast.makeText(getApplicationContext(),show+driver, Toast.LENGTH_SHORT).show();
+
+                                }
 
 
-                            Intent i = new Intent(getApplicationContext(), DriverContent.class);
-                            startActivity(i);
-                            finish();
-                            Toast.makeText(getApplicationContext(),show+driver, Toast.LENGTH_SHORT).show();
+                            }else{
+                                Intent i = new Intent(getApplicationContext(), DriverLogIn.class);
+                                startActivity(i);
+                                finish();
+                                Toast.makeText(getApplicationContext(),show+driver, Toast.LENGTH_SHORT).show();
+
+                            }
+
+
+
 
                         } else if (s.contentEquals(passenger)) {
 
@@ -177,12 +198,25 @@ public class Splash extends ActionBarActivity {
     }
 
     private void handleDriver() {
-        Intent i= new Intent(getApplicationContext(),DriverContent.class);
-        startActivity(i);
-        finish();
-        SharedPreferences.Editor editor = mTemeprefferences.edit();
-        editor.putString(Constants.TEME_DEF_USER,driver);
-        editor.commit();
+       if (mTemeprefferences.contains(Constants.TEME_DRIVER_LOGGED_IN)){
+           Intent i= new Intent(getApplicationContext(),DriverContent.class);
+           startActivity(i);
+           finish();
+           SharedPreferences.Editor editor = mTemeprefferences.edit();
+           editor.putString(Constants.TEME_DEF_USER,driver);
+           editor.commit();
+
+       }else{
+           Intent i= new Intent(getApplicationContext(),DriverLogIn.class);
+           startActivity(i);
+           finish();
+           SharedPreferences.Editor editor = mTemeprefferences.edit();
+           editor.putString(Constants.TEME_DEF_USER,driver);
+           editor.commit();
+
+       }
+
+
 
 
 
