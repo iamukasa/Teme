@@ -55,9 +55,7 @@ public class NotificationView  extends ActionBarActivity {
                 startActivity(mapIntent);
 
 
-//                Intent i=new Intent(getApplicationContext(),MapsActivity.class);
-//                startActivity(i);
-//                finish();
+
             }
         });
            seeMap2=(Button)findViewById(R.id.btnMapTwo);

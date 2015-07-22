@@ -11,4 +11,6 @@
     <string name="title_activity_maps">Map</string>
 
     <string name="title_activity_driver_log_in">Log In</string>
+    <string name="title_activity_admin_log_in">AdminLogIn</string>
+    <string name="title_activity_notificaton_view_two">NotificatonViewTwo</string>
 </resources>

@@ -13,6 +13,8 @@ public class Constants {
     public static final String TEME_CURRENT_LOCATION= "chamaName";
     public static final String TEME_DRIVER_LIST= "chamaName";
     public static final String TEME_DRIVER_LOGGED_IN= "chamaName";
+    public static final String TEME_ADMIN_LOGGED_IN= "chamaName";
+    public static final String TEME_CURRENT_PAYMENT_KEY= "chamaName";
 
 
 }

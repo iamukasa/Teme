@@ -30,11 +30,9 @@ public class DriverLogIn extends ActionBarActivity {
 
     Button loginDriver;
     EditText loginDriverName,logInCar;
-    ArrayList<Driver> driver;
+
     Firebase myFirebaseRef;
-
-
-
+    ArrayList<OnlineData> testlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +40,7 @@ public class DriverLogIn extends ActionBarActivity {
         setContentView(R.layout.activity_driver_log_in);
         mTemeprefferences=getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
         Firebase.setAndroidContext(getApplicationContext());
+        testlist=new ArrayList<OnlineData>();
 
         myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
         fillFromOnline();
@@ -73,35 +72,22 @@ public class DriverLogIn extends ActionBarActivity {
         }   }
 
     private void fillFromOnline() {
+        final ProgressDialog pDialog = new ProgressDialog(DriverLogIn.this);
+        pDialog.setMessage("Fetching data");
         myFirebaseRef.child("DriversList").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(final DataSnapshot snapshot, String s) {
+                pDialog.show();
 
                 Map<String, Object> newPost = (Map<String, Object>) snapshot.getValue();
                 if (newPost != null) {
-                    driver=new ArrayList<Driver>();
-                    ProgressDialog pDialog = new ProgressDialog(DriverLogIn.this);
-                    pDialog.setMessage("Fetching data");
-                    pDialog.show();
-            driver.add(new Driver(newPost.get("drivername").toString(), newPost.get("carname").toString()));
-                  pDialog.hide();
-      }
-                loginDriverName = (EditText) findViewById(R.id.loginDriveName);
 
-                logInCar = (EditText) findViewById(R.id.loginDriveCar);
-                loginDriver = (Button) findViewById(R.id.buttonLogInDriver);
-                loginDriver.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                 String useful=snapshot.getKey();
-                        String driversName = loginDriverName.getText().toString();
-                        String driversCar = logInCar.getText().toString();
-                        authenticate(driversName, driversCar, driver,useful);
 
-                    }
-                });
 
+                    testlist.add(new OnlineData(new Driver(newPost.get("drivername").toString(), newPost.get("carname").toString()),snapshot.getKey()));
+                }
+           pDialog.hide();
 
             }
 
@@ -125,23 +111,36 @@ public class DriverLogIn extends ActionBarActivity {
 
             }
         });
+        loginDriverName = (EditText) findViewById(R.id.loginDriveName);
+
+        logInCar = (EditText) findViewById(R.id.loginDriveCar);
+        loginDriver = (Button) findViewById(R.id.buttonLogInDriver);
+        loginDriver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String driversName = loginDriverName.getText().toString();
+                String driversCar = logInCar.getText().toString();
+                authenticate(driversName, driversCar);
+
+            }
+        });
     }
 
-    private void authenticate(String driversName, String driversCar, ArrayList<Driver> driver, String useful) {
-        for (int i=0;i<driver.size();i++){
-            Toast.makeText(getApplicationContext(),driver.get(i).DriverName
-                    ,Toast.LENGTH_LONG).show();
-            Toast.makeText(getApplicationContext(),driver.get(i).CarDriven
-                    ,Toast.LENGTH_LONG).show();
+    private void authenticate(String driversName, String driversCar) {
+        for (int i=0;i<testlist.size();i++){
+            Toast.makeText(getApplicationContext(),testlist.get(i).getDriver().DriverName
+                    ,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),testlist.get(i).getDriver().CarDriven
+                    ,Toast.LENGTH_SHORT).show();
 
-            if(driver.get(i).getDriverName().contentEquals(driversName)
+            if(testlist.get(i).getDriver().getDriverName().contentEquals(driversName)
                     &
-                    driver.get(i).getCarDriven().equals(driversCar) ){
+                    testlist.get(i).getDriver().getCarDriven().equals(driversCar) ){
 
                     Intent r=new Intent(getApplicationContext(),DriverContent.class);
                     r.putExtra("driver",driversName);
                     r.putExtra("car",driversCar);
-                    r.putExtra("our", useful);
+                    r.putExtra("our",testlist.get(i).getItemKey());
                     startActivity(r);
                     finish();
                     SharedPreferences.Editor editor = mTemeprefferences.edit();

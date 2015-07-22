@@ -49,24 +49,38 @@ public class Splash extends ActionBarActivity {
                         if (s.contentEquals(admin)) {
                             Toast.makeText(getApplicationContext(),show+s, Toast.LENGTH_SHORT).show();
 
-                            if(mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PHONE) &
-                                    mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PAYBILL)&
-                                    mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_FARE_RATE)
+                            if((mTemeprefferences.getString(Constants.TEME_ADMIN_LOGGED_IN, null).contentEquals("LoggedIn"))
                                     ){
+                                if (mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PHONE) &
+                                        mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PAYBILL) &
+                                        mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_FARE_RATE)
+                                        ) {
 
-                                Intent iu = new Intent(getApplicationContext(), AdminContent.class);
-                                startActivity(iu);
-                                finish();
-                                Toast.makeText(getApplicationContext(),show+admin, Toast.LENGTH_SHORT).show();
+                                    Intent iu = new Intent(getApplicationContext(), AdminContent.class);
+                                    startActivity(iu);
+                                    finish();
+                                    Toast.makeText(getApplicationContext(), show + admin, Toast.LENGTH_SHORT).show();
 
+
+                                } else {
+                                    Intent iu = new Intent(getApplicationContext(), EnterAdminDetails.class);
+                                    startActivity(iu);
+                                    finish();
+                                    Toast.makeText(getApplicationContext(), show + admin, Toast.LENGTH_SHORT).show();
+
+                                }
 
                             }else{
-                                Intent iu = new Intent(getApplicationContext(), EnterAdminDetails.class);
+                                Intent iu = new Intent(getApplicationContext(), AdminLogIn.class);
                                 startActivity(iu);
                                 finish();
-                                Toast.makeText(getApplicationContext(),show+admin, Toast.LENGTH_SHORT).show();
 
                             }
+
+
+
+
+
 
 
 //

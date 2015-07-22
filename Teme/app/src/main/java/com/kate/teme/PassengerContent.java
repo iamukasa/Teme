@@ -13,20 +13,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+
 import java.lang.reflect.Field;
+import java.util.Map;
 
 
 public class PassengerContent extends ActionBarActivity {
 
     SharedPreferences mTemeprefferences;
+    Firebase myFirebaseRef;
 
-
-    int e=0;
     FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
+
+        myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
         setContentView(R.layout.activity_passenger_content);
         mTemeprefferences=getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
       fragmentManager= getSupportFragmentManager();
@@ -35,6 +43,7 @@ public class PassengerContent extends ActionBarActivity {
                 .commit();
 
         getOverflowMenu();
+        loadadmindata();
 
 
 
@@ -42,7 +51,52 @@ public class PassengerContent extends ActionBarActivity {
 
     }
 
+    private void loadadmindata() {
+        myFirebaseRef.child("AdminList").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String s) {
+                Map<String, Object> newPost = (Map<String, Object>) snapshot.getValue();
+                if(newPost!=null){
+                    SharedPreferences.Editor editor = mTemeprefferences.edit();
+                    editor.putString(Constants.TEME_ADMIN_DETAILS_PAYBILL,
+                            newPost.get("Admin paybill").toString());
+                    editor.commit();
 
+                    SharedPreferences.Editor editor2 = mTemeprefferences.edit();
+                    editor.putString(Constants.TEME_ADMIN_DETAILS_PHONE,
+                            newPost.get("Admin phone no ").toString());
+                    editor.commit();
+
+                    SharedPreferences.Editor editor3 = mTemeprefferences.edit();
+                    editor.putString(Constants.TEME_ADMIN_DETAILS_FARE_RATE,
+                            newPost.get("Admin fare rate").toString());
+                    editor.commit();
+
+                }
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
 
 
     private void setToolBar() {
@@ -97,10 +151,14 @@ public class PassengerContent extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.call_admin) {
+if(mTemeprefferences.getString(Constants.TEME_ADMIN_DETAILS_PHONE, null) !=null){
+    String phnNo=mTemeprefferences.getString(Constants.TEME_ADMIN_DETAILS_PHONE, null);
+    Intent callIntent = new Intent(Intent.ACTION_CALL);
+    callIntent.setData(Uri.parse("tel:" +phnNo));
+    startActivity(callIntent);
 
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + "0717133826"));
-            startActivity(callIntent);
+}
+
             return true;
         }
 

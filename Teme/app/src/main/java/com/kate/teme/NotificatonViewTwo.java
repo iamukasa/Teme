@@ -12,7 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 
@@ -20,76 +20,70 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-
-public class EnterAdminDetails extends ActionBarActivity {
-    EditText phnNo,paybillNo,farRate;
-    Button seveDEt;
+public class NotificatonViewTwo extends ActionBarActivity {
     SharedPreferences mTemeprefferences;
     Firebase myFirebaseRef;
-
+    TextView paymentdetails;
+    Button btnyes,btnno;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enter_admin_details);
+        setContentView(R.layout.activity_notificaton_view_two);
         mTemeprefferences=getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
-        Firebase.setAndroidContext(this);
 
+        Firebase.setAndroidContext(getApplicationContext());
         myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
+        setToolBar();
+        paymentdetails=(TextView)findViewById(R.id.content);
+        btnyes=(Button)findViewById(R.id.btnYes);
+        btnno=(Button)findViewById(R.id.btnNo);
 
-
-
-        phnNo=(EditText)findViewById(R.id.adminEntPhnNo);
-        paybillNo=(EditText)findViewById(R.id.adminEntPayBill);
-        farRate=(EditText)findViewById(R.id.adminEntRate);
-        seveDEt=(Button)findViewById(R.id.saveAdminDetails);
-        seveDEt.setOnClickListener(new View.OnClickListener() {
+        Intent i=getIntent();
+        final String key=i.getExtras().getString("snapkey");
+       final String transaction=i.getExtras().getString("transaction");
+        final String phone_number=i.getExtras().getString("phone number");
+        final String amount=i.getExtras().getString("amount");
+        paymentdetails.setText("Verify Payment " +
+                transaction + "from " + phone_number + "for fare" + "/n totaling "+amount);
+        btnyes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String a=paybillNo.getText().toString();
-                String b=phnNo.getText().toString();
-                String c=farRate.getText().toString();
-
                 Map<String, String> post1 = new HashMap<String, String>();
-                post1.put("Admin paybill",a);
-                post1.put("Admin phone no ",b);
-                post1.put("Admin fare rate",c);
-                myFirebaseRef.child("AdminList").push().setValue(post1);
-
-                SharedPreferences.Editor editor = mTemeprefferences.edit();
-                editor.putString(Constants.TEME_ADMIN_DETAILS_PAYBILL, a);
-                editor.commit();
-
-                SharedPreferences.Editor editor2 = mTemeprefferences.edit();
-                editor.putString(Constants.TEME_ADMIN_DETAILS_PHONE, b);
-                editor.commit();
-
-                SharedPreferences.Editor editor3 = mTemeprefferences.edit();
-                editor.putString(Constants.TEME_ADMIN_DETAILS_FARE_RATE,c);
-
-
-
-
-
-                paybillNo.setText("");
-                phnNo.setText("");
-                farRate.setText("");
-
-
-                Intent iu= new Intent(getApplicationContext(),AdminContent.class);
-                startActivity(iu);
-                finish();
+                post1.put("transaction code",transaction);
+                post1.put("amount",amount);
+                post1.put("phone Number",phone_number);
+                post1.put("Name of feature","Fare");
+                post1.put("Verified","Yes");
+                Map<String, Object> payments = new HashMap<String, Object>();
+                payments.put(key, post1);
+                myFirebaseRef.child("Payments").updateChildren(payments);
 
             }
         });
-setToolBar();
+        btnno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, String> post1 = new HashMap<String, String>();
+                post1.put("transaction code",transaction);
+                post1.put("amount",amount);
+                post1.put("phone Number",phone_number);
+                post1.put("Name of feature","Fare");
+                post1.put("Verified","No");
+                Map<String, Object> payments = new HashMap<String, Object>();
+                payments.put(key, post1);
+                myFirebaseRef.child("Payments").updateChildren(payments);
+
+            }
+        });
+
+
     }
 
     private void setToolBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarAdminDetails);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarNotificationTwo);
         if (toolbar != null) {
-
-            setSupportActionBar(toolbar);
+           setSupportActionBar(toolbar);
             setUpActionbar();
             getOverflowMenu();
             toolbar.setBackgroundColor(getResources().getColor(R.color.blue));
@@ -102,21 +96,23 @@ setToolBar();
         if(getSupportActionBar()!=null){
             ActionBar bar = getSupportActionBar();
             bar.setTitle(getResources().getString(R.string.app_name));
-            bar.setHomeButtonEnabled(false);
-            bar.setDisplayShowHomeEnabled(false);
-            bar.setDisplayHomeAsUpEnabled(false);
+            bar.setHomeButtonEnabled(true);
+            bar.setDisplayShowHomeEnabled(true);
+            bar.setDisplayHomeAsUpEnabled(true);
             bar.setDisplayShowTitleEnabled(true);
+
+
+
             bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
- }
+
+        }
 
 
     }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_enter_driver_details, menu);
+        getMenuInflater().inflate(R.menu.menu_notificaton_view_two, menu);
         return true;
     }
 
@@ -151,20 +147,5 @@ setToolBar();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    public void onStop(){
-        super.onStop();
-
-        SharedPreferences.Editor editor2 = mTemeprefferences.edit();
-        editor2.putString(Constants.TEME_DEF_USER,"admin");
-        editor2.commit();
-
-    }
-
-    public void onDestroy(){
-        super.onDestroy();
-        SharedPreferences.Editor editor = mTemeprefferences.edit();
-        editor.putString(Constants.TEME_DEF_USER,"admin");
-        editor.commit();
     }
 }

@@ -75,40 +75,6 @@ public class DriverContent extends ActionBarActivity {
                     drivers.put(useful,post1);
                     myFirebaseRef.child("DriversList").updateChildren(drivers);
 
-//  /* Invoking the default notification service */
-//                    NotificationCompat.Builder  mBuilder =
-//                            new NotificationCompat.Builder(getApplicationContext());
-//
-//                    mBuilder.setContentTitle("New Fare");
-//                    mBuilder.setContentText("Go pick someone up");
-//                    mBuilder.setTicker("Go pick up a new fare from the CBD and drop him at Ngong");
-//                    mBuilder.setSmallIcon(R.mipmap.ic_launcher);
-//                    mBuilder.setSound(Uri.parse("android.resource://"
-//                            + getPackageName() + "/" + R.raw.notification_loaded));
-//
-//      /* Increase notification number every time a new notification arrives */
-//                    mBuilder.setNumber(++numMessages);
-//
-//      /* Creates an explicit intent for an Activity in your app */
-//                    Intent resultIntent = new Intent(DriverContent.this, NotificationView.class);
-//                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-//                    stackBuilder.addParentStack(NotificationView.class);
-//
-//      /* Adds the Intent that starts the Activity to the top of the stack */
-//                    stackBuilder.addNextIntent(resultIntent);
-//                    PendingIntent resultPendingIntent =
-//                            stackBuilder.getPendingIntent(
-//                                    0,
-//                                    PendingIntent.FLAG_UPDATE_CURRENT
-//                            );
-//
-//                    mBuilder.setContentIntent(resultPendingIntent);
-//
-//                    mNotificationManager =
-//                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//      /* notificationID allows you to update the notification later on. */
-//                    mNotificationManager.notify(notificationID, mBuilder.build());
 
 checknewFare();
 

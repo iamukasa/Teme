@@ -8,11 +8,11 @@ import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.telephony.SmsManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -20,18 +20,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+import com.kate.teme.Constants;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @SuppressLint("InlinedApi")
 public class Chowder extends Dialog {
-
-	private static Activity activity;
-	private Button bDone;
-	private TextView tvPhoneNumber, tvTitle;
-	private EditText etTransactionCode;
-	private String transactionCode, phoneNumber, nameOfFeature;
-	private int amount;
-
+	SharedPreferences mTemeprefferences;
 	public static long ONE_DAY = TimeUnit.MILLISECONDS
 			.convert(1, TimeUnit.DAYS);
 	public static long ONE_WEEK = TimeUnit.MILLISECONDS.convert(7,
@@ -44,9 +42,16 @@ public class Chowder extends Dialog {
 			TimeUnit.DAYS);
 	public static long ONE_YEAR = TimeUnit.MILLISECONDS.convert(365,
 			TimeUnit.DAYS);
+	private static Activity activity;
+	Firebase myFirebaseRef;
+	private Button bDone;
+	private TextView tvPhoneNumber, tvTitle;
+	private EditText etTransactionCode;
+	private String transactionCode, phoneNumber, nameOfFeature;
+	private int amount;
 
 	public Chowder(Activity activity, int amount, String phoneNumber,
-			String nameOfFeature) {
+				   String nameOfFeature) {
 		super(activity);
 		// TODO Auto-generated constructor stub
 		Chowder.activity = activity;
@@ -55,10 +60,36 @@ public class Chowder extends Dialog {
 		this.nameOfFeature = nameOfFeature;
 	}
 
+	public static void subscribeUser(Activity activity, String nameOfFeature,
+									 long subscriptionPeriod) {
+		// TODO Auto-generated method stub
+		if (subscriptionPeriod != 0) {
+			int alarmType = AlarmManager.ELAPSED_REALTIME;
+			AlarmManager alarmManager = (AlarmManager) activity
+					.getSystemService(Context.ALARM_SERVICE);
+
+			Intent alarmIntent = new Intent(activity.getApplication(),
+					Mung.class);
+			Bundle b = new Bundle();
+			b.putString("nameOfFeature", nameOfFeature);
+			alarmIntent.putExtras(b);
+
+			PendingIntent pIntent = PendingIntent.getBroadcast(
+					activity.getApplicationContext(), 0, alarmIntent,
+					PendingIntent.FLAG_UPDATE_CURRENT);
+			alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime()
+					+ subscriptionPeriod, subscriptionPeriod, pIntent);
+
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		Firebase.setAndroidContext(activity.getApplicationContext());
+		myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
+
 		requestWindowFeature((int) Window.FEATURE_NO_TITLE);
 
 		int layoutId = getResourceIdByName(activity.getPackageName(), "layout",
@@ -110,8 +141,8 @@ public class Chowder extends Dialog {
 		tvTitle.setText("Hi, please pay Ksh."
 				+ amount
 				+ " to the number above via M-Pesa as "
-				 + nameOfFeature
-				 +" and enter the transaction code below:");
+				+ nameOfFeature
+				+" and enter the transaction code below:");
 
 		etTransactionCode = (EditText) findViewById(etTransactionCodeId);
 		etTransactionCode.setHint("Transaction code...");
@@ -136,16 +167,28 @@ public class Chowder extends Dialog {
 	}
 
 	private void sendPaymentDetails(String transactionCode, int amount,
-			String phoneNumber, String nameOfFeature) {
+									String phoneNumber, String nameOfFeature) {
 		// TODO Auto-generated method stub
 		try {
-			SmsManager smsManager = SmsManager.getDefault();
-			smsManager.sendTextMessage(phoneNumber, null, "Chowder::"
-					+ transactionCode + "::" + amount + "::" + phoneNumber
-					+ "::" + nameOfFeature, null, null);
+			Map<String,Object> post1 = new HashMap<String,Object>();
+			post1.put("transaction code",transactionCode);
+			post1.put("amount",amount);
+			post1.put("phone Number",phoneNumber);
+			post1.put("Name of feature",nameOfFeature);
+			myFirebaseRef.child("Payments").push().setValue(post1);
+			mTemeprefferences=getOwnerActivity().getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
+			SharedPreferences.Editor editor = mTemeprefferences.edit();
+			editor.putString(Constants.TEME_CURRENT_PAYMENT_KEY,myFirebaseRef.child("Payments").push().getKey());
+			editor.commit();
+
+// SmsManager smsManager = SmsManager.getDefault();
+//			smsManager.sendTextMessage(phoneNumber, null, "Chowder::"
+//					+ transactionCode + "::" + amount + "::" + phoneNumber
+//					+ "::" + nameOfFeature, null, null);
+
 			Toast.makeText(
 					activity.getApplicationContext(),
-					"Please wait, you will recieve a verification text shortly",
+					"Please wait, you will recieve a verification notificaton shortly",
 					Toast.LENGTH_LONG).show();
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -158,32 +201,9 @@ public class Chowder extends Dialog {
 
 	}
 
-	public static void subscribeUser(Activity activity, String nameOfFeature,
-			long subscriptionPeriod) {
-		// TODO Auto-generated method stub
-		if (subscriptionPeriod != 0) {
-			int alarmType = AlarmManager.ELAPSED_REALTIME;
-			AlarmManager alarmManager = (AlarmManager) activity
-					.getSystemService(Context.ALARM_SERVICE);
-
-			Intent alarmIntent = new Intent(activity.getApplication(),
-					Mung.class);
-			Bundle b = new Bundle();
-			b.putString("nameOfFeature", nameOfFeature);
-			alarmIntent.putExtras(b);
-
-			PendingIntent pIntent = PendingIntent.getBroadcast(
-					activity.getApplicationContext(), 0, alarmIntent,
-					PendingIntent.FLAG_UPDATE_CURRENT);
-			alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime()
-					+ subscriptionPeriod, subscriptionPeriod, pIntent);
-
-		}
-	}
-
 	@SuppressWarnings("rawtypes")
 	private int getResourceIdByName(String packageName, String className,
-			String name) {
+									String name) {
 		Class r = null;
 		int id = 0;
 		try {
