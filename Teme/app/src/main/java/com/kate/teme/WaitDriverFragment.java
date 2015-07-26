@@ -76,9 +76,13 @@ public class WaitDriverFragment extends Fragment{
     }
     private void doPayStuff() {
 
-        if(mTemeprefferences.getString(Constants.TEME_ADMIN_DETAILS_PHONE, null) !=null){
+        if(mTemeprefferences.getString(Constants.TEME_ADMIN_DETAILS_PHONE, null) !=null &
+                mTemeprefferences.getString(Constants.TEME_CURRENT_FARE,null) !=null
+                ){
+            String fare=mTemeprefferences.getString(Constants.TEME_CURRENT_FARE,null);
+            int ifare=Integer.valueOf(fare);
             String phnNo=mTemeprefferences.getString(Constants.TEME_ADMIN_DETAILS_PHONE, null);
-            Chowder chowder = new Chowder(getActivity(),500,phnNo, nameOfFeature);
+            Chowder chowder = new Chowder(getActivity(),ifare,"0717133826", nameOfFeature);
             chowder.show();
             docheckVerification();
         }

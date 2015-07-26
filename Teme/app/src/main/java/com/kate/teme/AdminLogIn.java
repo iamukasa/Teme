@@ -70,8 +70,8 @@ public class AdminLogIn extends ActionBarActivity {
                                 editor.commit();
 
                                 if (mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PHONE) &
-                                        mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PAYBILL) &
-                                        mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_FARE_RATE)
+
+                                        mTemeprefferences.contains(Constants.TEME_ADMIN_RATE)
                                         ) {
 
                                     Intent iu = new Intent(getApplicationContext(), AdminContent.class);

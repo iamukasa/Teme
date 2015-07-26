@@ -22,7 +22,7 @@ import java.util.Map;
 
 
 public class EnterAdminDetails extends ActionBarActivity {
-    EditText phnNo,paybillNo,farRate;
+    EditText phnNo,farRate;
     Button seveDEt;
     SharedPreferences mTemeprefferences;
     Firebase myFirebaseRef;
@@ -40,38 +40,38 @@ public class EnterAdminDetails extends ActionBarActivity {
 
 
         phnNo=(EditText)findViewById(R.id.adminEntPhnNo);
-        paybillNo=(EditText)findViewById(R.id.adminEntPayBill);
+
         farRate=(EditText)findViewById(R.id.adminEntRate);
         seveDEt=(Button)findViewById(R.id.saveAdminDetails);
         seveDEt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String a=paybillNo.getText().toString();
+
                 String b=phnNo.getText().toString();
                 String c=farRate.getText().toString();
 
                 Map<String, String> post1 = new HashMap<String, String>();
-                post1.put("Admin paybill",a);
+
                 post1.put("Admin phone no ",b);
                 post1.put("Admin fare rate",c);
                 myFirebaseRef.child("AdminList").push().setValue(post1);
 
-                SharedPreferences.Editor editor = mTemeprefferences.edit();
-                editor.putString(Constants.TEME_ADMIN_DETAILS_PAYBILL, a);
-                editor.commit();
+
 
                 SharedPreferences.Editor editor2 = mTemeprefferences.edit();
-                editor.putString(Constants.TEME_ADMIN_DETAILS_PHONE, b);
-                editor.commit();
+                editor2.putString(Constants.TEME_ADMIN_DETAILS_PHONE, b);
+                editor2.commit();
 
                 SharedPreferences.Editor editor3 = mTemeprefferences.edit();
-                editor.putString(Constants.TEME_ADMIN_DETAILS_FARE_RATE,c);
+                editor3.putString(Constants.TEME_ADMIN_RATE,c);
+                editor3.commit();
 
 
 
 
 
-                paybillNo.setText("");
+
+
                 phnNo.setText("");
                 farRate.setText("");
 

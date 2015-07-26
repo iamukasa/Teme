@@ -128,14 +128,12 @@ public class DriverLogIn extends ActionBarActivity {
 
     private void authenticate(String driversName, String driversCar) {
         for (int i=0;i<testlist.size();i++){
-            Toast.makeText(getApplicationContext(),testlist.get(i).getDriver().DriverName
-                    ,Toast.LENGTH_SHORT).show();
-            Toast.makeText(getApplicationContext(),testlist.get(i).getDriver().CarDriven
-                    ,Toast.LENGTH_SHORT).show();
+
 
             if(testlist.get(i).getDriver().getDriverName().contentEquals(driversName)
                     &
                     testlist.get(i).getDriver().getCarDriven().equals(driversCar) ){
+
 
                     Intent r=new Intent(getApplicationContext(),DriverContent.class);
                     r.putExtra("driver",driversName);
@@ -146,6 +144,7 @@ public class DriverLogIn extends ActionBarActivity {
                     SharedPreferences.Editor editor = mTemeprefferences.edit();
                     editor.putString(Constants.TEME_DRIVER_LOGGED_IN, "logged in");
                     editor.commit();
+                i=testlist.size();
 
             }else{
                 Toast.makeText(getApplicationContext(),"Wrong details cannot log in",Toast.LENGTH_LONG).show();

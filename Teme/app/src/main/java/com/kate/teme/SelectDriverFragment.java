@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
@@ -43,6 +44,24 @@ public class SelectDriverFragment extends Fragment {
         dDereva=new ArrayList<String>();
         dCar=new ArrayList<String>();
         Firebase.setAndroidContext(getActivity().getApplicationContext());
+
+        if( mTemeprefferences.getString(Constants.TEME_ADMIN_RATE,null)!=null
+                & mTemeprefferences.getString(Constants.TEME_CURRENT_DISTANCE,null) !=null){
+            String rate=mTemeprefferences.getString(Constants.TEME_ADMIN_RATE,null);
+        String distance=mTemeprefferences.getString(Constants.TEME_CURRENT_DISTANCE,null);
+        int iRate=Integer.valueOf(rate);
+        int idstance=Integer.valueOf(distance);
+        int ipay=iRate *idstance;
+        String  toPay=String.valueOf(ipay);
+
+        SharedPreferences.Editor editor2 = mTemeprefferences.edit();
+        editor2.putString(Constants.TEME_CURRENT_FARE,toPay);
+        editor2.commit();
+            TextView er=(TextView)fWhatsapp.findViewById(R.id.showPayFare);
+            er.setText("Your Fare is: "+toPay);
+        }
+
+
 
         myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
 

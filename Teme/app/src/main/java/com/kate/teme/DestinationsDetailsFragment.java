@@ -19,17 +19,15 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
-import com.kate.teme.geofire.GeoFire;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by irving on 6/9/15.
  */
 public class DestinationsDetailsFragment extends Fragment {
-    private static final String GEO_FIRE_REF = "https://teme.firebaseio.com/New_Fare/New_fare_location";
-    private GeoFire geoFire;
 
 
     SharedPreferences mTemeprefferences;
@@ -42,13 +40,11 @@ public class DestinationsDetailsFragment extends Fragment {
         mTemeprefferences=getActivity().getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
         View fsnobbedtexts= inflater.inflate(R.layout.fragment_destination_details, container, false);
         final EditText destination=(EditText)fsnobbedtexts.findViewById(R.id.entDestination);
-//        final Button nxt=(Button)fsnobbedtexts.findViewById(R.id.nextStep);
 
         Firebase.setAndroidContext(getActivity().getApplicationContext());
 
         myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
-        // setup GeoFire
-        geoFire = new GeoFire(new Firebase(GEO_FIRE_REF));
+
 
 
         destination.setOnKeyListener(new View.OnKeyListener() {
@@ -58,16 +54,13 @@ public class DestinationsDetailsFragment extends Fragment {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     SharedPreferences.Editor editor = mTemeprefferences.edit();
                     editor.putString(Constants.TEME_CURRENT_DESTINATION, destination.getText().toString());
-
                     editor.commit();
-                    getPAsssengerLocation();
+
+                    String txtdestination = destination.getText().toString();
+                    getPAsssengerLocation(txtdestination);
 
 
 
-                    FragmentManager fragmentManager=getActivity().getSupportFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container, new SelectDriverFragment())
-                            .commit();
 
 
                     return true;
@@ -75,11 +68,11 @@ public class DestinationsDetailsFragment extends Fragment {
                 return false;
             }
         });
-getPAsssengerLocation();
+
         return fsnobbedtexts;
     }
 
-    private void getPAsssengerLocation() {
+    private void getPAsssengerLocation(final String txtdestination) {
 
         Context ctx = getActivity().getApplicationContext();
         gc = new Geocoder(ctx);
@@ -97,10 +90,28 @@ getPAsssengerLocation();
                         " Longitude : " + location.getLongitude(), Toast.LENGTH_SHORT).show();
                 String currlocationttosend=locationList.get(0).getAddressLine(0);
 
+        Geocoder geoCoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
+               List<Address> address = geoCoder.getFromLocationName(txtdestination, 1);
+                    double latitude = address.get(0).getLatitude();
+                    double longitude = address.get(0).getLongitude();
+                Location locationA = new Location("point A");
 
-                SharedPreferences.Editor editor = mTemeprefferences.edit();
-                editor.putString(Constants.TEME_CURRENT_LOCATION, currlocationttosend);
-  //geoFire.setLocation("Current destination",new GeoLocation(location.getLatitude(),location.getLongitude()));
+
+
+                locationA.setLatitude(latitude/ 1E6);
+                locationA.setLongitude(longitude/ 1E6);
+               double distance = location.distanceTo(locationA);
+                String distance2= String.valueOf(distance);
+                SharedPreferences.Editor ed= mTemeprefferences.edit();
+                ed.putString(Constants.TEME_CURRENT_DISTANCE,distance2);
+                ed.commit();
+
+
+
+
+                SharedPreferences.Editor eddy = mTemeprefferences.edit();
+                eddy.putString(Constants.TEME_CURRENT_LOCATION, currlocationttosend);
+                eddy.commit();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -117,17 +128,33 @@ getPAsssengerLocation();
             public void onLocationChanged(Location location) {
 
                 try {
-//                    cord.setText( "Latitude : "+location.getLongitude()+" Longitude : "+location.getLongitude());
 
                     if(lm.isProviderEnabled(getActivity().WIFI_SERVICE))
                     {
                         locationList = gc.getFromLocation(location.getLatitude(),location.getLongitude(), 1);
-//                        geoFire.setLocation("Current destination",new GeoLocation(location.getLatitude(),location.getLongitude()));
-                        String currlocationttosend=locationList.get(0).getAddressLine(0);
+                         String currlocationttosend=locationList.get(0).getAddressLine(0);
 
 
-                        SharedPreferences.Editor editor = mTemeprefferences.edit();
-                        editor.putString(Constants.TEME_CURRENT_LOCATION, currlocationttosend);
+                        Geocoder geoCoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
+                        List<Address> address = geoCoder.getFromLocationName(txtdestination, 1);
+                        double latitude = address.get(0).getLatitude();
+                        double longitude = address.get(0).getLongitude();
+                        Location locationA = new Location("point A");
+
+
+
+                        locationA.setLatitude(latitude/ 1E6);
+                        locationA.setLongitude(longitude/ 1E6);
+                        double distance = location.distanceTo(locationA);
+                        String distance2= String.valueOf(distance);
+                        SharedPreferences.Editor edite= mTemeprefferences.edit();
+                        edite.putString(Constants.TEME_CURRENT_DISTANCE, distance2);
+                        edite.commit();
+
+
+                        SharedPreferences.Editor editorial = mTemeprefferences.edit();
+                        editorial.putString(Constants.TEME_CURRENT_LOCATION, currlocationttosend);
+                        editorial.commit();
                     }
 
                 } catch (IOException e) {
@@ -165,9 +192,14 @@ getPAsssengerLocation();
         criteria.setAltitudeRequired(false); // Choose if you use altitude.
         criteria.setBearingRequired(false); // Choose if you use bearing.
         criteria.setCostAllowed(false); // Choose if this provider can waste money :-)
-        lm.getBestProvider(criteria,true);
+        lm.getBestProvider(criteria, true);
 
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000,1, locationListener);
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
+
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, new SelectDriverFragment())
+                .commit();
 
     }
 

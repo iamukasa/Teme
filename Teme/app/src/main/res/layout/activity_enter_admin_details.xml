@@ -31,17 +31,11 @@
       android:inputType="number"
       android:id="@+id/adminEntPhnNo"
       />
+
     <EditText
         android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:hint="Enter Paybill no"
-        android:inputType="number"
-        android:id="@+id/adminEntPayBill"
-      />
-    <EditText
-        android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:hint="Enter Fare rate (Km/Ksh)"
+      android:hint="Enter Fare rate (Ksh/Km)"
         android:inputType="number"
         android:id="@+id/adminEntRate"
       />

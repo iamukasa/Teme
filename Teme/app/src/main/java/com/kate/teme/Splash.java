@@ -52,8 +52,7 @@ public class Splash extends ActionBarActivity {
                             if((mTemeprefferences.getString(Constants.TEME_ADMIN_LOGGED_IN, null).contentEquals("LoggedIn"))
                                     ){
                                 if (mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PHONE) &
-                                        mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PAYBILL) &
-                                        mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_FARE_RATE)
+                                      mTemeprefferences.contains(Constants.TEME_ADMIN_RATE)
                                         ) {
 
                                     Intent iu = new Intent(getApplicationContext(), AdminContent.class);
@@ -238,29 +237,21 @@ public class Splash extends ActionBarActivity {
 
     private void handleAdmin() {
 
-        if(mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PHONE) &
-                mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_PAYBILL)&
-                mTemeprefferences.contains(Constants.TEME_ADMIN_DETAILS_FARE_RATE)
-                 ){
-            Intent i= new Intent(getApplicationContext(),AdminContent.class);
-            startActivity(i);
+            Intent iu = new Intent(getApplicationContext(), AdminLogIn.class);
+            startActivity(iu);
             finish();
             SharedPreferences.Editor editor = mTemeprefferences.edit();
-            editor.putString(Constants.TEME_DEF_USER,admin);
-            editor.commit();
-
-
-
-        }else{
-            Intent i= new Intent(getApplicationContext(),EnterAdminDetails.class);
-            startActivity(i);
-            finish();
-            SharedPreferences.Editor editor = mTemeprefferences.edit();
-            editor.putString(Constants.TEME_DEF_USER,admin);
+            editor.putString(Constants.TEME_DEF_USER, admin);
             editor.commit();
 
         }
 
 
-    }
+
+
+
+
+
+
+
 }

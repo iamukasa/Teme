@@ -1,5 +1,6 @@
 package com.kate.teme;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +38,7 @@ public class PassengerContent extends ActionBarActivity {
         myFirebaseRef = new Firebase("https://teme.firebaseio.com/");
         setContentView(R.layout.activity_passenger_content);
         mTemeprefferences=getSharedPreferences(Constants.TEME_PREFERENCES, Context.MODE_PRIVATE);
+
       fragmentManager= getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, new DestinationsDetailsFragment())
@@ -52,25 +54,25 @@ public class PassengerContent extends ActionBarActivity {
     }
 
     private void loadadmindata() {
+        final ProgressDialog pDialog = new ProgressDialog(PassengerContent.this);
+        pDialog.setMessage("Fetching data");
+        pDialog.show();
         myFirebaseRef.child("AdminList").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String s) {
                 Map<String, Object> newPost = (Map<String, Object>) snapshot.getValue();
                 if(newPost!=null){
-                    SharedPreferences.Editor editor = mTemeprefferences.edit();
-                    editor.putString(Constants.TEME_ADMIN_DETAILS_PAYBILL,
-                            newPost.get("Admin paybill").toString());
-                    editor.commit();
-
-                    SharedPreferences.Editor editor2 = mTemeprefferences.edit();
-                    editor.putString(Constants.TEME_ADMIN_DETAILS_PHONE,
+                SharedPreferences.Editor up = mTemeprefferences.edit();
+                    up.putString(Constants.TEME_ADMIN_DETAILS_PHONE,
                             newPost.get("Admin phone no ").toString());
-                    editor.commit();
+                    up.commit();
 
-                    SharedPreferences.Editor editor3 = mTemeprefferences.edit();
-                    editor.putString(Constants.TEME_ADMIN_DETAILS_FARE_RATE,
+                    SharedPreferences.Editor upper = mTemeprefferences.edit();
+                    upper.putString(Constants.TEME_ADMIN_RATE,
                             newPost.get("Admin fare rate").toString());
-                    editor.commit();
+                    upper.commit();
+
+                    pDialog.hide();
 
                 }
 
